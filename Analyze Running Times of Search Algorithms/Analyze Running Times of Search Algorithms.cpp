@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -31,26 +33,38 @@ int sequentialSearch(const vector<int>& vec, int target) {
 }
 
 int main() {
-    vector<int> data = { 34, 7, 23, 32, 5, 62, 32, 13 };
+    srand(time(0));
+    vector<int> data;
+    for (int i = 0; i < 10; ++i) {
+        data.push_back(rand() % 100 + 1);
+    }
     sort(data.begin(), data.end());
 
-    int target1 = 23; 
-    int target2 = 99; 
+    int target = rand() % 100 + 1;
 
-    int index = recursiveBinarySearch(data, 0, data.size() - 1, target1);
-    cout << "Recursive Binary Search: " << target1 << " found at location " << index << endl;
-    index = recursiveBinarySearch(data, 0, data.size() - 1, target2);
-    cout << "Recursive Binary Search: " << target2 << " was not found, return value is " << index << endl;
+    cout << "Vector contents: ";
+    for (int num : data) {
+        cout << num << " ";
+    }
+    cout << endl;
 
-    index = iterativeBinarySearch(data, target1);
-    cout << "Iterative Binary Search: " << target1 << " found at location " << index << endl;
-    index = iterativeBinarySearch(data, target2);
-    cout << "Iterative Binary Search: " << target2 << " was not found, return value is " << index << endl;
+    int index = recursiveBinarySearch(data, 0, data.size() - 1, target);
+    if (index >= 0)
+        cout << "Recursive Binary Search: " << target << " found at location " << index << endl;
+    else
+        cout << "Recursive Binary Search: " << target << " was not found" << endl;
 
-    index = sequentialSearch(data, target1);
-    cout << "Sequential Search: " << target1 << " found at location " << index << endl;
-    index = sequentialSearch(data, target2);
-    cout << "Sequential Search: " << target2 << " was not found, return value is " << index << endl;
+    index = iterativeBinarySearch(data, target);
+    if (index >= 0)
+        cout << "Iterative Binary Search: " << target << " found at location " << index << endl;
+    else
+        cout << "Iterative Binary Search: " << target << " was not found" << endl;
+
+    index = sequentialSearch(data, target);
+    if (index >= 0)
+        cout << "Sequential Search: " << target << " found at location " << index << endl;
+    else
+        cout << "Sequential Search: " << target << " was not found" << endl;
 
     return 0;
 }
