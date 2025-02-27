@@ -40,7 +40,7 @@ int main() {
     }
     sort(data.begin(), data.end());
 
-    int target = rand() % 100 + 1;
+    int target = data[rand() % data.size()]; 
 
     cout << "Vector contents: ";
     for (int num : data) {
