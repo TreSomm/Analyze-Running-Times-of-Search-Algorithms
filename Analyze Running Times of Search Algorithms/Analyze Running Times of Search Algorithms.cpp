@@ -3,8 +3,10 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 int recursiveBinarySearch(const vector<int>& vec, int left, int right, int target) {
     if (left > right) return -1;
@@ -33,38 +35,38 @@ int sequentialSearch(const vector<int>& vec, int target) {
 }
 
 int main() {
-    srand(time(0));
-    vector<int> data;
+    const int N = 1000000;
+    double SumRBS = 0, SumIBS = 0, SumSeqS = 0;
+
     for (int i = 0; i < 10; ++i) {
-        data.push_back(rand() % 100 + 1);
+        vector<int> data;
+        srand(time(0) + i); 
+        for (int j = 0; j < N; ++j) {
+            data.push_back(rand() % 100000 + 1);
+        }
+        sort(data.begin(), data.end());
+
+        int target = data[rand() % N]; 
+
+        auto start = high_resolution_clock::now();
+        recursiveBinarySearch(data, 0, data.size() - 1, target);
+        auto end = high_resolution_clock::now();
+        SumRBS += duration<double, micro>(end - start).count();
+
+        start = high_resolution_clock::now();
+        iterativeBinarySearch(data, target);
+        end = high_resolution_clock::now();
+        SumIBS += duration<double, micro>(end - start).count();
+
+        start = high_resolution_clock::now();
+        sequentialSearch(data, target);
+        end = high_resolution_clock::now();
+        SumSeqS += duration<double, micro>(end - start).count();
     }
-    sort(data.begin(), data.end());
 
-    int target = data[rand() % data.size()]; 
-
-    cout << "Vector contents: ";
-    for (int num : data) {
-        cout << num << " ";
-    }
-    cout << endl;
-
-    int index = recursiveBinarySearch(data, 0, data.size() - 1, target);
-    if (index >= 0)
-        cout << "Recursive Binary Search: " << target << " found at location " << index << endl;
-    else
-        cout << "Recursive Binary Search: " << target << " was not found" << endl;
-
-    index = iterativeBinarySearch(data, target);
-    if (index >= 0)
-        cout << "Iterative Binary Search: " << target << " found at location " << index << endl;
-    else
-        cout << "Iterative Binary Search: " << target << " was not found" << endl;
-
-    index = sequentialSearch(data, target);
-    if (index >= 0)
-        cout << "Sequential Search: " << target << " found at location " << index << endl;
-    else
-        cout << "Sequential Search: " << target << " was not found" << endl;
+    cout << "Average Running Time for Recursive Binary Search in microseconds is " << SumRBS / 10 << endl;
+    cout << "Average Running Time for Iterative Binary Search in microseconds is " << SumIBS / 10 << endl;
+    cout << "Average Running Time for Sequential Search in microseconds is " << SumSeqS / 10 << endl;
 
     return 0;
 }
